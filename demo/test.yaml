@@ -1,0 +1,27 @@
+workflow:
+- hosts: [192.168.56.101, 192.168.56.102]
+  username: playcrab
+  port: 22
+  nodes:
+  - {cmd: sh /data/shell/phpfpm.sh start, nodename: phpfpm, priority: 1}
+  - {cmd: sh /data/shell/nginx.sh start, nodename: nginx, priority: 2}
+  priority: 3
+  task: setp1
+
+- hosts: [192.168.56.101, 192.168.56.103]
+  username: playcrab
+  port: 22
+  nodes:
+  - {cmd: sh /data/shell/phpfpm.sh start, nodename: phpfpm, priority: 1}
+  - {cmd: sh /data/shell/nginx.sh start, nodename: nginx, priority: 2}
+  priority: 2
+  task: setp2
+
+- hosts: [192.168.56.101, 192.168.56.104]
+  username: playcrab
+  port: 22
+  nodes:
+  - {cmd: sh /data/shell/phpfpm.sh start, nodename: phpfpm, priority: 1}
+  - {cmd: sh /data/shell/nginx.sh start, nodename: nginx, priority: 2}
+  priority: 1
+  task: setp3
