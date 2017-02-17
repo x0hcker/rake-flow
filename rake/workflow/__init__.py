@@ -108,7 +108,7 @@ class workflow(Thread):
                 cmd_dict = {"cmd": "&".join(cmd),"ip":host,"username":w['username'],'port':w['port']}
                 cmds.append(cmd_dict)
 
-            print(cmds)
+
             from rake.workflow.task import task
 
             d = task(cmds)

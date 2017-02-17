@@ -36,7 +36,7 @@ class db_proxy(object):
         :param uri:
         """
 
-
+        self.table_name = "workflow"
         self.uri = uri
         engine = uri.split(":")[0]
         self.engine = engine
@@ -56,7 +56,7 @@ class db_proxy(object):
         tmp_data = {'priority': priority, 'flag': 0}
         tmp_data.update(data)
 
-        return self.db_object.insert('users',**tmp_data)
+        return self.db_object.insert(self.table_name,**tmp_data)
 
 
 
@@ -68,7 +68,7 @@ class db_proxy(object):
         """
 
         where = {'flag': 0}
-        data = self.db_object.find_one_and_update('users', where)
+        data = self.db_object.find_one_and_update(self.table_name, where)
 
         return data
 
@@ -79,7 +79,7 @@ class db_proxy(object):
         """
 
         where = {'flag': 0}
-        count = self.db_object.count('users', **where)
+        count = self.db_object.count(self.table_name, **where)
         return count
 
 

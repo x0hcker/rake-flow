@@ -30,15 +30,10 @@ usege:
 __all__ = ['actuator']
 
 
-def trace_back():
-    try:
-        return traceback.format_exc()
-    except:
-        return ''
-
 
 class actuator(Thread):
-    def __init__(self, host={}, id_rsa="~/.ssh/id_rsa", known_hosts="~/.ssh/known_hosts", conn_timeout=5, timeout=10,
+
+    def __init__(self, host={}, id_rsa="~/.ssh/id_rsa", known_hosts="~/.ssh/known_hosts", conn_timeout=5, timeout=60,
                  log_to_file="/tmp/ssh.log"):
 
         Thread.__init__(self)
@@ -61,9 +56,10 @@ class actuator(Thread):
 
     def run(self):
 
-        status = self.ssh_commands()
-        if status == False:
-            self.ssh_paramiko()
+        self.ssh_paramiko()
+        #status = self.ssh_commands()
+        #if status == False:
+        #    self.ssh_paramiko()
 
     def ssh_paramiko(self):
 
@@ -99,7 +95,10 @@ class actuator(Thread):
             )
             # 获取远程命令执行结果
             stdin, stdout, stderr = self.ssh.exec_command(host['cmd'], bufsize=65535, timeout=self.timeout)
-            temp = stdout.readlines()
+            lines = stdout.readlines()
+            temp = []
+            for line in lines:
+                temp.append(line.rstrip().lstrip()  )
 
             status = {'status': 0, 'ip': host['ip'], 'output': json.dumps(temp)}
 
@@ -108,14 +107,16 @@ class actuator(Thread):
 
             self.result = status
 
-        except:
+        except  Exception, e:
 
             self.ssh.close()
 
-            self.result = {'status': -1, 'ip': host['ip'], 'output': trace_back()}
+            self.result = {'status': -1, 'ip': host['ip'], 'output': e}
 
             return False
 
+
+    """
     def ssh_commands(self):
 
         host = self.host
@@ -140,3 +141,4 @@ class actuator(Thread):
             self.result = {'status': -1, 'ip': host['ip'], 'output': trace_back()}
 
             return False
+    """
