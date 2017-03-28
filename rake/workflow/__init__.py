@@ -79,9 +79,13 @@ class workflow(Thread):
         Thread.__init__(self)
         self.data = data
 
+    def task_before(self,data):
+        print ("task_before")
+
+    def task_after(self, data):
+        print ("task_after")
 
     def run(self):
-
 
         workflow = self.data['workflow']
         from operator import itemgetter
@@ -95,8 +99,6 @@ class workflow(Thread):
             hosts = w['hosts']
             nodes.sort(key=itemgetter('priority'), reverse=True)
 
-
-
             cmds = []
             for host in hosts:
 
@@ -104,6 +106,8 @@ class workflow(Thread):
                 cmd = []
                 for n in nodes:
                     cmd.append(n['cmd'])
+                    # cmd_dict = {"cmd": n['cmd'], "ip": host, "username": w['username'], 'port': w['port']}
+                    # cmds.append(cmd_dict)
 
                 cmd_dict = {"cmd": "&".join(cmd),"ip":host,"username":w['username'],'port':w['port']}
                 cmds.append(cmd_dict)
@@ -111,10 +115,12 @@ class workflow(Thread):
 
             from rake.workflow.task import task
 
+            self.task_before(w)
             d = task(cmds)
             d.run()
-            result =  d.get_result()
+            result = d.get_result()
             print(result)
+            self.task_after(w)
 
 
 
@@ -136,9 +142,44 @@ class consumer(Process):
         super(consumer, self).__init__()
 
 
+    def workflow_before(self,data):
+
+        print("consumer_workflow_before")
+
+    def workflow_after(self,data):
+        print("consumer_workflow_after")
+
+    def task_before(self, data):
+        print ("consumer_task_before")
+        print(data)
+
+    def task_after(self, data):
+        print ("consumer_task_after")
+        print(data)
+
+
     def run(self):
 
         db = db_proxy(uri=self.uri)
+
+        class TT(workflow):
+
+            def __init__(self, data):
+                workflow.__init__(self, data)
+
+            def callback_task_before(self,callback_task_before):
+
+                self.ccallback_task_before = callback_task_before
+
+            def callback_task_after(self, callback_task_after):
+
+                self.ccallback_task_after = callback_task_after
+
+            def task_before(self, data):
+                self.ccallback_task_before(data)
+
+            def task_after(self, data):
+                self.ccallback_task_after(data)
 
         while True:
 
@@ -147,8 +188,13 @@ class consumer(Process):
                 data = db.get()
 
                 #workflow并行关系,所以开启线程
-                w = workflow(data)
+                self.workflow_before(data)
+                w = TT(data)
+                w.callback_task_before(self.task_before)
+                w.callback_task_after(self.task_after)
                 w.start()
+                w.join()
+                self.workflow_after(data)
 
             else:
                 time.sleep(1)

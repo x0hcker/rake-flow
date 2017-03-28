@@ -15,12 +15,23 @@ import  sys
 
 from rake.workflow import consumer
 
+
+class C(consumer):
+
+    def __init__(self,serializer='json', uri=None):
+
+        super(C,self).__init__(serializer=serializer, uri=uri)
+
+    def workflow_callback(self):
+
+        print "workflow_callback"
+
 if __name__ == '__main__':
 
 
     try:
 
-        temp = consumer(serializer='json', uri="mongodb://localhost:27017/logs")
+        temp = C(serializer='json', uri="mongodb://localhost:27017/logs")
 
         temp.start()
 

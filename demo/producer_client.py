@@ -17,7 +17,6 @@ from rake.workflow import  producer
 
 if __name__ == '__main__':
 
-
     try:
         p = producer(uri ="mongodb://localhost:27017/logs")
 
