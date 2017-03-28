@@ -23,7 +23,7 @@ with open('README.rst') as fp:
 
 setup(
     name = 'rake-workflow',
-    version = '1.1.1',
+    version = '1.1.3',
     keywords = ('rake', 'paramiko','workflow','ansible'),
     description = 'devops use workflow to  Batch Management System and Production Application ',
 
