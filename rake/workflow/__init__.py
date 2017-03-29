@@ -82,7 +82,7 @@ class workflow(Thread):
     def task_before(self,data):
         print ("task_before")
 
-    def task_after(self, data):
+    def task_after(self, data,result):
         print ("task_after")
 
     def run(self):
@@ -90,14 +90,13 @@ class workflow(Thread):
         workflow = self.data['workflow']
         from operator import itemgetter
 
-        workflow.sort(key=itemgetter('priority'),reverse = True)
+        workflow.sort(key=itemgetter('priority'))
 
         #task之间串行
         for w in workflow:
-
             nodes = w['nodes']
             hosts = w['hosts']
-            nodes.sort(key=itemgetter('priority'), reverse=True)
+            nodes.sort(key=itemgetter('priority'))
 
             cmds = []
             for host in hosts:
@@ -119,8 +118,7 @@ class workflow(Thread):
             d = task(cmds)
             d.run()
             result = d.get_result()
-            print(result)
-            self.task_after(w)
+            self.task_after(w,result)
 
 
 
@@ -153,7 +151,7 @@ class consumer(Process):
         print ("consumer_task_before")
         print(data)
 
-    def task_after(self, data):
+    def task_after(self, data,result):
         print ("consumer_task_after")
         print(data)
 
@@ -178,8 +176,8 @@ class consumer(Process):
             def task_before(self, data):
                 self.ccallback_task_before(data)
 
-            def task_after(self, data):
-                self.ccallback_task_after(data)
+            def task_after(self, data,result):
+                self.ccallback_task_after(data,result)
 
         while True:
 
