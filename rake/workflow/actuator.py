@@ -95,12 +95,19 @@ class actuator(Thread):
             )
             # 获取远程命令执行结果
             stdin, stdout, stderr = self.ssh.exec_command(host['cmd'], bufsize=65535, timeout=self.timeout)
-            lines = stdout.readlines()
-            temp = []
-            for line in lines:
-                temp.append(line.rstrip().lstrip()  )
+            err = stderr.readlines()
+            if len(err):
+                temp = []
+                for line in err:
+                    temp.append(line.rstrip().lstrip())
+                raise Exception(json.dumps(temp))
+            else:
+                lines = stdout.readlines()
+                temp = []
+                for line in lines:
+                    temp.append(line.rstrip().lstrip())
 
-            status = {'status': 0, 'ip': host['ip'], 'output': json.dumps(temp)}
+                status = {'status': 0, 'ip': host['ip'], 'output': json.dumps(temp)}
 
             # 输出执行结果
             self.ssh.close()

@@ -119,6 +119,13 @@ class workflow(Thread):
             d.run()
             result = d.get_result()
             self.task_after(w,result)
+            flag = False
+            for i in result:
+                if i['status'] == -1:
+                    flag = True
+                    break
+            if flag is True:
+                break
 
 
 
