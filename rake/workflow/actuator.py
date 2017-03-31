@@ -97,17 +97,15 @@ class actuator(Thread):
             stdin, stdout, stderr = self.ssh.exec_command(host['cmd'], bufsize=65535, timeout=self.timeout)
             err = stderr.readlines()
             if len(err):
-                temp = []
-                for line in err:
-                    temp.append(line.rstrip().lstrip())
-                raise Exception(json.dumps(temp))
+                lines = err
+                res = -1
             else:
                 lines = stdout.readlines()
-                temp = []
-                for line in lines:
-                    temp.append(line.rstrip().lstrip())
-
-                status = {'status': 0, 'ip': host['ip'], 'output': json.dumps(temp)}
+                res = 0
+            temp = []
+            for line in lines:
+                temp.append(line.rstrip().lstrip())
+            status = {'status': res, 'ip': host['ip'], 'output': json.dumps(temp)}
 
             # 输出执行结果
             self.ssh.close()
