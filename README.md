@@ -11,6 +11,6 @@
 
 ### install
 
-    pip2.7 install rake-workflow
+    pip2.7 install rake-flow
 
 ### doc
