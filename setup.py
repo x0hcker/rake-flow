@@ -31,7 +31,7 @@ setup(
 
     license = 'Apache Licence 2.0',
 
-    url = 'https://github.com/x0hcker',
+    url = 'https://github.com/x0hcker/rake-flow',
     author = 'x0hcker@gmail.com',
     author_email = 'x0hcker@gmail.com',
 
