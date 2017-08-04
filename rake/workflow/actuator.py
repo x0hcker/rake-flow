@@ -56,10 +56,10 @@ class actuator(Thread):
 
     def run(self):
 
-        self.ssh_paramiko()
-        #status = self.ssh_commands()
-        #if status == False:
-        #    self.ssh_paramiko()
+        #self.ssh_paramiko()
+        status = self.ssh_paramiko()
+        if status == False:
+            self.ssh_commands()
 
     def ssh_paramiko(self):
 
@@ -121,7 +121,7 @@ class actuator(Thread):
             return False
 
 
-    """
+
     def ssh_commands(self):
 
         host = self.host
@@ -146,4 +146,4 @@ class actuator(Thread):
             self.result = {'status': -1, 'ip': host['ip'], 'output': trace_back()}
 
             return False
-    """
+

@@ -22,8 +22,8 @@ with open('README.rst') as fp:
 
 
 setup(
-    name = 'rake-workflow',
-    version = '1.1.5',
+    name = 'rake-flow',
+    version = '1.5',
     keywords = ('rake', 'paramiko','workflow','ansible'),
     description = 'devops use workflow to  Batch Management System and Production Application ',
 
@@ -31,9 +31,9 @@ setup(
 
     license = 'Apache Licence 2.0',
 
-    url = 'https://github.com/djshell/rake-workflow',
-    author = 'wqc2008@gmail.com',
-    author_email = 'wqc2008@gmail.com',
+    url = 'https://github.com/x0hcker',
+    author = 'x0hcker@gmail.com',
+    author_email = 'x0hcker@gmail.com',
 
     packages = find_packages(),
     include_package_data = True,
