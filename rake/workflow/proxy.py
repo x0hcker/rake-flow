@@ -68,6 +68,7 @@ class db_proxy(object):
         """
 
         where = {'flag': 0}
+
         data = self.db_object.find_one_and_update(self.table_name, where)
 
         return data

@@ -10,15 +10,16 @@ usege:
     
 """
 
-import  sys
-from rake.workflow import  producer
+import sys
+sys.path.append("..")
+from rake.workflow import producer
 
 
 
 if __name__ == '__main__':
 
     try:
-        p = producer(uri ="mongodb://localhost:27017/logs")
+        p = producer(uri ="redis://@localhost:6379/0")
 
         for i in range(1,2):
 

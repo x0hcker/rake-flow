@@ -61,7 +61,7 @@ class producer(Process):
         db = db_proxy(uri=self.uri)
         result = db.put(self.payload, self.priority)
 
-        #print('%s生产:%s' % (self.exchange, self.payload))
+        # print('%s生产:%s' % (self.exchange, self.payload))
 
 
 
@@ -78,6 +78,7 @@ class workflow(Thread):
         """
         Thread.__init__(self)
         self.data = data
+        print self.data
 
     def task_before(self,data):
         print ("task_before")
@@ -87,6 +88,7 @@ class workflow(Thread):
 
     def run(self):
 
+        print type(self.data)
         workflow = self.data['workflow']
         from operator import itemgetter
 
@@ -191,6 +193,7 @@ class consumer(Process):
             if db.empty():
 
                 data = db.get()
+
 
                 #workflow并行关系,所以开启线程
                 self.workflow_before(data)

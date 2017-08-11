@@ -11,7 +11,8 @@ usege:
     
 """
 
-import  sys
+import sys
+sys.path.append("..")
 
 from rake.workflow import consumer
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
 
     try:
 
-        temp = C(serializer='json', uri="mongodb://localhost:27017/logs")
+        temp = C(serializer='json', uri ="redis://@localhost:6379/0")
 
         temp.start()
 
