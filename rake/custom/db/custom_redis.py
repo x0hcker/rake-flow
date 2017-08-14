@@ -19,7 +19,6 @@ class custom_redis():
         else:
             self.uri = uri
 
-        print self.uri
         #建立和数据库系统的连接,创建Connection时，指定host及port参数
         self.conn = redis.from_url(url=self.uri)
 
@@ -110,7 +109,7 @@ class custom_redis():
         :return:
         '''
 
-        return  self.conn.llen(table_name)
+        return self.conn.llen(table_name)
 
 
 

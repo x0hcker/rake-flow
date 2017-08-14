@@ -88,7 +88,6 @@ class workflow(Thread):
 
     def run(self):
 
-        print type(self.data)
         workflow = self.data['workflow']
         from operator import itemgetter
 
@@ -150,19 +149,17 @@ class consumer(Process):
 
 
     def workflow_before(self,data):
-
-        print("consumer_workflow_before")
+        pass
 
     def workflow_after(self,data):
-        print("consumer_workflow_after")
+        pass
 
     def task_before(self, data):
-        print ("consumer_task_before")
-        print(data)
+        pass
+
 
     def task_after(self, data,result):
-        print ("consumer_task_after")
-        print(data)
+        pass
 
 
     def run(self):
