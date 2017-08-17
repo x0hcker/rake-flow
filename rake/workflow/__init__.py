@@ -78,13 +78,15 @@ class workflow(Thread):
         """
         Thread.__init__(self)
         self.data = data
-        print self.data
+
 
     def task_before(self,data):
-        print ("task_before")
+
+        pass
+
 
     def task_after(self, data,result):
-        print ("task_after")
+        pass
 
     def run(self):
 
