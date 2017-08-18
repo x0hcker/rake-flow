@@ -6,7 +6,7 @@ python setup.py sdist
 
 
 
-twine upload dist/rake-flow-{$1}.tar.gz
+twine upload dist/rake-flow-$1.tar.gz
 
 git add .
 
