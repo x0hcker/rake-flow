@@ -14,7 +14,7 @@ usege:
 
 import yaml
 
-
+import os
 import importlib
 import os.path
 
@@ -134,6 +134,13 @@ class conf_proxy(object):
         a = autoload('rake.custom.config.custom_%s' % (self.format))
         m = a.get_mod()
         self.conf_object = getattr(m, 'custom_%s' % self.format)(self.filename)
+
+
+        if os.path.exists(self.filename) == False:
+            of = open(self.filename, 'w')
+            of.write('\n')
+            of.close()
+
 
     def dump(self, data=None):
         """
