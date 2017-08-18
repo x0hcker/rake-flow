@@ -136,13 +136,6 @@ class conf_proxy(object):
         self.conf_object = getattr(m, 'custom_%s' % self.format)(self.filename)
 
 
-        os.makedirs(self.filename, 0775, exist_ok=True)
-
-        if os.path.exists(self.filename) == False:
-            of = open(self.filename, 'w')
-            of.write('\n')
-            of.close()
-
 
     def dump(self, data=None):
         """
