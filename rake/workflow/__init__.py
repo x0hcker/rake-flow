@@ -109,7 +109,7 @@ class workflow(Thread):
                     # cmd_dict = {"cmd": n['cmd'], "ip": host, "username": w['username'], 'port': w['port']}
                     # cmds.append(cmd_dict)
 
-                cmd_dict = {"cmd": "&".join(cmd),"ip":host,"username":w['username'],'port':w['port']}
+                cmd_dict = {"cmd": "&".join(cmd),"ip":host['host'],"username":w['username'],'port':host['port']}
                 cmds.append(cmd_dict)
 
 
