@@ -38,7 +38,7 @@ which is:
 
 
 class custom_mongodb():
-    def __init__(self, uri=None):
+    def __init__(self, uri=None,selectdb=None):
 
         """
         @param cursor_hander:数据库句柄
@@ -56,7 +56,12 @@ class custom_mongodb():
 
         # 建立和数据库系统的连接,创建Connection时，指定host及port参数
         self.conn = MongoClient(self.uri)
-        self.database = self.conn.get_default_database()
+        #self.database = self.conn.get_default_database()
+
+        if selectdb == None:
+            self.database = self.conn.get_default_database()
+        else:
+            self.database = self.conn.get_database(selectdb)
 
     def __del__(self):
 

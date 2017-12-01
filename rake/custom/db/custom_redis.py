@@ -6,7 +6,7 @@ import json
 
 class custom_redis():
 
-    def __init__(self, uri=None):
+    def __init__(self, uri=None,selectdb = None):
 
         """
         @param cursor_hander: 数据库句柄

@@ -26,7 +26,7 @@ class producer(Process):
 
     """
 
-    def __init__(self, serializer='json', uri=None):
+    def __init__(self, serializer='json', uri=None, selectdb=None):
         """
 
         :param serializer:
@@ -34,6 +34,7 @@ class producer(Process):
         """
         self.uri = uri
         self.serializer = serializer
+        self.selectdb = selectdb
         super(producer, self).__init__()  # 重写了父类的方法
 
     def put(self, payload_file = None,priority=1):
@@ -138,7 +139,7 @@ class consumer(Process):
 
     """
 
-    def __init__(self, serializer='json', uri=None):
+    def __init__(self, serializer='json', uri=None, selectdb=None):
         """
 
         :param serializer:
@@ -147,6 +148,7 @@ class consumer(Process):
 
         self.uri = uri
         self.serializer = serializer
+        self.selectdb = selectdb
         super(consumer, self).__init__()
 
 

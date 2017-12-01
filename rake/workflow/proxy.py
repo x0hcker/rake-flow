@@ -29,7 +29,7 @@ class db_proxy(object):
     """
     各类型数据库的代理类
     """
-    def __init__(self, uri=None):
+    def __init__(self, uri=None, selectdb=None):
         """
 
         :param serializer:
@@ -38,12 +38,13 @@ class db_proxy(object):
 
         self.table_name = "workflow"
         self.uri = uri
+        self.selectdb = selectdb
         engine = uri.split(":")[0]
         self.engine = engine
 
         a = autoload('rake.custom.db.custom_%s' % (self.engine))
         m = a.get_mod()
-        self.db_object = getattr(m, 'custom_%s' % self.engine)(self.uri)
+        self.db_object = getattr(m, 'custom_%s' % self.engine)(self.uri,self.selectdb)
 
     def put(self, data=None, priority=1):
         """
