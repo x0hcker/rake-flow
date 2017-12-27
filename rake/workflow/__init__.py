@@ -59,7 +59,7 @@ class producer(Process):
 
         :return:
         """
-        db = db_proxy(uri=self.uri)
+        db = db_proxy(uri=self.uri,selectdb=self.selectdb)
         result = db.put(self.payload, self.priority)
 
         # print('%s生产:%s' % (self.exchange, self.payload))
@@ -72,13 +72,14 @@ class workflow(Thread):
     task之间串行
     task node之间串行
     """
-    def __init__(self,data):
+    def __init__(self,data,db):
         """
 
         :param data:
         """
         Thread.__init__(self)
         self.data = data
+        self.db=db
 
 
     def task_before(self,data):
@@ -118,18 +119,23 @@ class workflow(Thread):
 
             from rake.workflow.task import task
 
-            self.task_before(w)
-            d = task(cmds)
-            d.run()
-            result = d.get_result()
-            self.task_after(w,result)
-            flag = False
-            for i in result:
-                if i['status'] == -1:
-                    flag = True
+            res=self.task_before(w)
+            if res==1:
+                d = task(cmds)
+                d.run()
+                result = d.get_result()
+                self.task_after(w,result)
+                flag = False
+                for i in result:
+                    if i['status'] == -1:
+                        flag = True
+                        break
+                if flag is True:
                     break
-            if flag is True:
+            else:
                 break
+
+
 
 
 
@@ -168,42 +174,36 @@ class consumer(Process):
 
     def run(self):
 
-        db = db_proxy(uri=self.uri)
+        db = db_proxy(uri=self.uri,selectdb=self.selectdb)
 
         class TT(workflow):
 
-            def __init__(self, data):
-                workflow.__init__(self, data)
+            def __init__(self, data,db):
+                workflow.__init__(self, data,db)
 
             def callback_task_before(self,callback_task_before):
 
                 self.ccallback_task_before = callback_task_before
+                return self.ccallback_task_before
 
             def callback_task_after(self, callback_task_after):
 
                 self.ccallback_task_after = callback_task_after
 
             def task_before(self, data):
-                self.ccallback_task_before(data)
+                return self.ccallback_task_before(data)
 
             def task_after(self, data,result):
                 self.ccallback_task_after(data,result)
 
-        while True:
+        if db.empty():
 
-            if db.empty():
-
-                data = db.get()
-
-
-                #workflow并行关系,所以开启线程
-                self.workflow_before(data)
-                w = TT(data)
-                w.callback_task_before(self.task_before)
-                w.callback_task_after(self.task_after)
-                w.start()
-                w.join()
-                self.workflow_after(data)
-
-            else:
-                time.sleep(1)
+            data = db.get()
+            #workflow并行关系,所以开启线程
+            self.workflow_before(data)
+            w = TT(data,db)
+            a=w.callback_task_before(self.task_before)
+            w.callback_task_after(self.task_after)
+            w.start()
+            w.join()
+            self.workflow_after(data)

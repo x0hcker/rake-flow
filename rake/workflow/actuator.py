@@ -62,10 +62,10 @@ class actuator(Thread):
 
     def run(self):
 
-        #self.ssh_paramiko()
-        status = self.ssh_paramiko()
-        if status == False:
-            self.ssh_commands()
+        self.ssh_paramiko()
+        # status = self.ssh_paramiko()
+        # if status == False:
+        #     self.ssh_commands()
 
     def ssh_paramiko(self):
 
@@ -108,10 +108,10 @@ class actuator(Thread):
             else:
                 lines = stdout.readlines()
                 res = 0
-            temp = []
-            for line in lines:
-                temp.append(line.rstrip().lstrip())
-            status = {'status': res, 'ip': host['ip'], 'output': json.dumps(temp)}
+            # temp = []
+            # for line in lines:
+            #     temp.append(line.rstrip().lstrip())
+            status = {'status': res, 'ip': host['ip'], 'output': json.dumps(lines)}
 
             # 输出执行结果
             self.ssh.close()
