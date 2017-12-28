@@ -90,6 +90,9 @@ class workflow(Process):
     def task_after(self, data,result):
         pass
 
+    def workflow_after(self,data):
+        pass
+
     def run(self):
 
         workflow = self.data['workflow']
@@ -135,7 +138,7 @@ class workflow(Process):
             else:
                 break
 
-
+        self.workflow_after(self.data)
 
 
 
@@ -204,6 +207,17 @@ class consumer(Process):
             def task_after(self, data,result):
                 self.ccallback_task_after(data,result)
 
+
+            def callback_workflow_after(self,callback_workflow_after_func):
+                self.after_workflow_func = callback_workflow_after_func
+
+            def workflow_after(self,data):
+
+                self.after_workflow_func(data)
+
+
+
+
         while True:
 
             if db.empty():
@@ -213,9 +227,10 @@ class consumer(Process):
                 w = TT(data,db)
                 a=w.callback_task_before(self.task_before)
                 w.callback_task_after(self.task_after)
+                w.callback_workflow_after(self.workflow_after)
                 self.check_process_count()
                 w.start()
                 # w.join()
-                self.workflow_after(data)
+                # self.workflow_after(data)
             else:
                 time.sleep(0.5)
