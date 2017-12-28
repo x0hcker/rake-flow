@@ -14,7 +14,7 @@ import time
 from multiprocessing import Process
 from threading import Thread
 
-from proxy import  db_proxy, conf_proxy
+from proxy import db_proxy, conf_proxy
 
 
 class producer(Process):
@@ -66,7 +66,7 @@ class producer(Process):
 
 
 
-class workflow(Thread):
+class workflow(Process):
     """
     workflow之间并行
     task之间串行
@@ -77,7 +77,7 @@ class workflow(Thread):
 
         :param data:
         """
-        Thread.__init__(self)
+        Process.__init__(self)
         self.data = data
         self.db=db
 
@@ -145,7 +145,7 @@ class consumer(Process):
 
     """
 
-    def __init__(self, serializer='json', uri=None, selectdb=None):
+    def __init__(self, serializer='json', uri=None, selectdb=None, process_count=6):
         """
 
         :param serializer:
@@ -155,6 +155,7 @@ class consumer(Process):
         self.uri = uri
         self.serializer = serializer
         self.selectdb = selectdb
+        self.process_count = process_count
         super(consumer, self).__init__()
 
 
@@ -171,6 +172,13 @@ class consumer(Process):
     def task_after(self, data,result):
         pass
 
+    def check_process_count(self,w):
+
+        if len(w.active_children()) < self.process_count:
+            return True
+        else:
+            time.sleep(1)
+            self.check_process_count(w)
 
     def run(self):
 
@@ -196,14 +204,18 @@ class consumer(Process):
             def task_after(self, data,result):
                 self.ccallback_task_after(data,result)
 
-        if db.empty():
+        while True:
 
-            data = db.get()
-            #workflow并行关系,所以开启线程
-            self.workflow_before(data)
-            w = TT(data,db)
-            a=w.callback_task_before(self.task_before)
-            w.callback_task_after(self.task_after)
-            w.start()
-            w.join()
-            self.workflow_after(data)
+            if db.empty():
+                data = db.get()
+                #workflow并行关系,所以开启线程
+                self.workflow_before(data)
+                w = TT(data,db)
+                a=w.callback_task_before(self.task_before)
+                w.callback_task_after(self.task_after)
+                self.check_process_count(w)
+                w.start()
+                # w.join()
+                self.workflow_after(data)
+            else:
+                time.sleep(0.5)
