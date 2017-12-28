@@ -11,7 +11,7 @@ usege:
 """
 
 import time
-from multiprocessing import Process
+from multiprocessing import Process,active_children
 from threading import Thread
 
 from proxy import db_proxy, conf_proxy
@@ -172,13 +172,13 @@ class consumer(Process):
     def task_after(self, data,result):
         pass
 
-    def check_process_count(self,w):
+    def check_process_count(self):
 
-        if len(w.active_children()) < self.process_count:
+        if len(active_children()) < self.process_count:
             return True
         else:
             time.sleep(1)
-            self.check_process_count(w)
+            self.check_process_count()
 
     def run(self):
 
@@ -213,7 +213,7 @@ class consumer(Process):
                 w = TT(data,db)
                 a=w.callback_task_before(self.task_before)
                 w.callback_task_after(self.task_after)
-                self.check_process_count(w)
+                self.check_process_count()
                 w.start()
                 # w.join()
                 self.workflow_after(data)
