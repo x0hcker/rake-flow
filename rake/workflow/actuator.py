@@ -85,7 +85,8 @@ class actuator(Thread):
                 host['port'] = 22
 
             # 缺失host_knows时的处理方法
-            self.ssh.load_system_host_keys(self.known_hosts)
+            #self.ssh.load_system_host_keys(self.known_hosts) 屏蔽原因是docker 镜像中没有known_hosts 这个空文件，会报错
+            self.ssh.load_system_host_keys()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
             self.ssh.connect(
@@ -99,9 +100,15 @@ class actuator(Thread):
                 allow_agent=allow_agent
                 # look_for_keys=False # 当为False时,禁止在~/.ssh 中搜索私钥文件
             )
+
+
             # 获取远程命令执行结果
             stdin, stdout, stderr = self.ssh.exec_command(host['cmd'], bufsize=65535, timeout=self.timeout)
+            # channel = stdout.channel
+            # status = channel.recv_exit_status()
+
             err = stderr.readlines()
+
             if len(err):
                 lines = err
                 res = -1
@@ -122,7 +129,7 @@ class actuator(Thread):
 
             self.ssh.close()
 
-            self.result = {'status': -1, 'ip': host['ip'], 'output': e}
+            self.result = {'status': -1, 'ip': host['ip'], 'output': e.message}
 
             return False
 
